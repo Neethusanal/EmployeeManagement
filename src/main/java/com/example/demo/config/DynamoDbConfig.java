@@ -51,7 +51,7 @@ public class DynamoDbConfig {
             DynamoDbEnhancedClient enhancedClient) {
 
         return enhancedClient.table(
-                "EmployeesData",
+                "Employees",
                 TableSchema.fromBean(Employee.class)
         );
     }

@@ -2,7 +2,7 @@
 
 
 package com.example.demo.service;
-
+import java.util.UUID;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +21,10 @@ public class EmployeeService {
 
     // CREATE
     public Employee createEmployee(Employee employee) {
+
+    	employee.setEmployeeId(UUID.randomUUID().toString());
+    	
+
 
         return employeeRepository.save(employee);
     }

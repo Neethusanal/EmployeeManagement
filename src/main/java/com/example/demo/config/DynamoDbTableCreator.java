@@ -19,19 +19,30 @@ public class DynamoDbTableCreator {
 
             try {
 
-                employeeTable.createTable();
+                employeeTable.describeTable();
 
                 System.out.println(
-                        "Employees table created successfully!"
+                    "Employees table already exists."
                 );
 
             } catch (Exception e) {
 
-                System.out.println(
-                        "Employees table already exists or creation failed."
-                );
+                try {
 
-                e.printStackTrace();
+                    employeeTable.createTable();
+
+                    System.out.println(
+                        "Employees table created successfully!"
+                    );
+
+                } catch (Exception ex) {
+
+                    System.out.println(
+                        "Failed to create Employees table."
+                    );
+
+                    ex.printStackTrace();
+                }
             }
         };
     }

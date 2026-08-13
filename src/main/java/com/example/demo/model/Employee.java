@@ -15,6 +15,7 @@ public class Employee {
     private String joiningDate;
     private Status status;
     private Role role;
+    private String password;
 
     public enum Status {
         ACTIVE,
@@ -97,5 +98,12 @@ public class Employee {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
