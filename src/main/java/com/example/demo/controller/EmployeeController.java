@@ -1,17 +1,13 @@
-
 package com.example.demo.controller;
 
 import java.util.List;
-
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.Employee;
 import com.example.demo.service.EmployeeService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.example.demo.config.CorsConfig;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -57,15 +53,14 @@ public class EmployeeController {
     }
 
     // UPDATE
+ // UPDATE
     @PutMapping("/{employeeId}")
     public ResponseEntity<Employee> updateEmployee(
             @PathVariable String employeeId,
             @RequestBody Employee employee) {
 
-        employee.setEmployeeId(employeeId);
-
         Employee updatedEmployee =
-                employeeService.updateEmployee(employee);
+                employeeService.updateEmployee(employeeId, employee);
 
         return ResponseEntity.ok(updatedEmployee);
     }

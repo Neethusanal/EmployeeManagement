@@ -20,7 +20,9 @@ public class EmployeeRepository {
 
     // CREATE
     public Employee save(Employee employee) {
+
         employeeTable.putItem(employee);
+
         return employee;
     }
 
@@ -34,7 +36,7 @@ public class EmployeeRepository {
         return employeeTable.getItem(key);
     }
 
-    // READ - all employees
+    // READ - all
     public List<Employee> findAll() {
 
         return employeeTable.scan()
@@ -43,10 +45,23 @@ public class EmployeeRepository {
                 .toList();
     }
 
+    // FIND BY EMAIL - used for login
+    public Employee findByEmail(String email) {
+
+        return employeeTable.scan()
+                .items()
+                .stream()
+                .filter(employee ->
+                        email.equalsIgnoreCase(employee.getEmail()))
+                .findFirst()
+                .orElse(null);
+    }
+
     // UPDATE
     public Employee update(Employee employee) {
 
         employeeTable.updateItem(employee);
+
         return employee;
     }
 
