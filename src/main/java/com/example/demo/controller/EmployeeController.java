@@ -11,6 +11,7 @@ import com.example.demo.config.CorsConfig;
 
 @RestController
 @RequestMapping("/api/employees")
+
 public class EmployeeController {
 
     private final EmployeeService employeeService;

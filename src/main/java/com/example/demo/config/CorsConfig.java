@@ -11,7 +11,9 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
 
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
+                .allowedOrigins(
+                        "https://employee-management-frontend-lyart.vercel.app"
+                )
                 .allowedMethods(
                         "GET",
                         "POST",

@@ -1,6 +1,6 @@
 //package com.example.demo.config;
-//import java.util.UUID;
 //
+//import java.util.UUID;
 //
 //import org.springframework.boot.CommandLineRunner;
 //import org.springframework.context.annotation.Bean;
@@ -21,26 +21,45 @@
 //
 //        return args -> {
 //
-//            Employee admin = new Employee();
+//            String adminEmail = "admin@gmail.com";
 //
-//            admin.setEmployeeId(UUID.randomUUID().toString());
-//            admin.setName("Admin");
-//            admin.setEmail("admin@gmail.com");
-//            admin.setPhoneNumber("0000000000");
-//            admin.setDepartment("Administration");
-//            admin.setDesignation("Administrator");
-//            admin.setJoiningDate("2026-08-13");
-//            admin.setStatus(Status.ACTIVE);
-//            admin.setRole(Role.ADMIN);
+//            // Check if admin already exists
+//            Employee existingAdmin =
+//                    employeeRepository.findByEmail(adminEmail);
 //
-//            PasswordEncoder encoder = new BCryptPasswordEncoder();
-//            admin.setPassword(encoder.encode("admin123"));
+//            if (existingAdmin == null) {
 //
-//            employeeRepository.save(admin);
+//                Employee admin = new Employee();
 //
-//            System.out.println("Initial admin created!");
-//            System.out.println("Email: admin@gmail.com");
-//           System.out.println("Password: admin123");
-//       };
+//                admin.setEmployeeId(UUID.randomUUID().toString());
+//                admin.setName("Admin");
+//                admin.setEmail(adminEmail);
+//                admin.setPhoneNumber("0000000000");
+//                admin.setDepartment("Administration");
+//                admin.setDesignation("Administrator");
+//                admin.setJoiningDate("2026-08-13");
+//                admin.setStatus(Status.ACTIVE);
+//                admin.setRole(Role.ADMIN);
+//
+//                PasswordEncoder encoder =
+//                        new BCryptPasswordEncoder();
+//
+//                admin.setPassword(
+//                        encoder.encode("admin123")
+//                );
+//
+//                employeeRepository.save(admin);
+//
+//                System.out.println("=================================");
+//                System.out.println("Initial admin created!");
+//                System.out.println("Email: admin@gmail.com");
+//                System.out.println("Password: admin123");
+//                System.out.println("=================================");
+//
+//            } else {
+//
+//                System.out.println("Admin already exists.");
+//            }
+//        };
 //    }
 //}

@@ -66,10 +66,12 @@ public class EmployeeService {
     // GET ALL
     public List<Employee> getAllEmployees() {
 
-        return employeeRepository.findAll();
-    }
-
-    // GET BY ID
+        return employeeRepository.findAll()
+                .stream()
+                .filter(employee -> employee.getRole() != Employee.Role.ADMIN)
+                .toList();
+        
+    }    // GET BY ID
     public Employee getEmployeeById(String employeeId) {
 
         return employeeRepository.findById(employeeId);
