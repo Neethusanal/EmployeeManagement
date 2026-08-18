@@ -92,7 +92,11 @@ public class EmployeeService {
                 new ArrayList<>(employeeRepository.findAll());
 
         // Sorting
-        employees.sort(Comparator.comparing(Employee::getName));
+//        employees.sort(Comparator.comparing(Employee::getName));
+        employees.sort(Comparator.comparing(
+                Employee::getName,
+                String.CASE_INSENSITIVE_ORDER
+        ));
 
         // Pagination
         int start = page * size;

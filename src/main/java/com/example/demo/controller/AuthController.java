@@ -3,8 +3,8 @@ package com.example.demo.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.model.Employee;
 import com.example.demo.model.LoginRequest;
+import com.example.demo.model.LoginResponse;
 import com.example.demo.service.AuthService;
 
 @RestController
@@ -15,17 +15,16 @@ public class AuthController {
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
-
         this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Employee> login(
+    public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest loginRequest) {
 
-        Employee employee =
+        LoginResponse response =
                 authService.login(loginRequest);
 
-        return ResponseEntity.ok(employee);
+        return ResponseEntity.ok(response);
     }
 }

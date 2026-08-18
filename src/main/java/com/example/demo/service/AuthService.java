@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Employee;
 import com.example.demo.model.LoginRequest;
+import com.example.demo.model.LoginResponse;
 import com.example.demo.repository.EmployeeRepository;
 
 @Service
@@ -12,17 +13,21 @@ public class AuthService {
 
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public AuthService(
             EmployeeRepository employeeRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService) {
 
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public Employee login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
 
+        // Find employee by email
         Employee employee =
                 employeeRepository.findByEmail(
                         loginRequest.getEmail());
@@ -55,6 +60,16 @@ public class AuthService {
                     "Invalid email or password");
         }
 
-        return employee;
+        // Generate JWT
+        String token =
+                jwtService.generateToken(employee);
+
+        // Return JWT + employee information
+        return new LoginResponse(
+                token,
+                employee.getEmployeeId(),
+                employee.getName(),
+                employee.getRole().name()
+        );
     }
 }
