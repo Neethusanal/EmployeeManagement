@@ -31,10 +31,14 @@ public class EmployeeController {
     }
 
     // READ - all employees
+    
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees() {
+    public ResponseEntity<List<Employee>> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        List<Employee> employees = employeeService.getAllEmployees();
+        List<Employee> employees =
+                employeeService.getAllEmployees(page, size);
 
         return ResponseEntity.ok(employees);
     }

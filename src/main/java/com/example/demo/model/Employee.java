@@ -2,7 +2,7 @@ package com.example.demo.model;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-
+import java.time.LocalDate;
 @DynamoDbBean
 public class Employee {
 
@@ -12,10 +12,13 @@ public class Employee {
     private String phoneNumber;
     private String department;
     private String designation;
-    private String joiningDate;
+    private LocalDate joiningDate;
     private Status status;
     private Role role;
     private String password;
+    private boolean autoActivationPending;
+
+    
 
     public enum Status {
         ACTIVE,
@@ -76,14 +79,13 @@ public class Employee {
         this.designation = designation;
     }
 
-    public String getJoiningDate() {
+    public LocalDate getJoiningDate() {
         return joiningDate;
     }
 
-    public void setJoiningDate(String joiningDate) {
+    public void setJoiningDate(LocalDate joiningDate) {
         this.joiningDate = joiningDate;
     }
-
     public Status getStatus() {
         return status;
     }
@@ -105,6 +107,13 @@ public class Employee {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    public boolean isAutoActivationPending() {
+        return autoActivationPending;
+    }
+
+    public void setAutoActivationPending(boolean autoActivationPending) {
+        this.autoActivationPending = autoActivationPending;
     }
    
 }

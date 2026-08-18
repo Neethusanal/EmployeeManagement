@@ -1,12 +1,12 @@
 
 package com.example.demo.service;
-
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.ArrayList;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
 import com.example.demo.model.Employee;
 import com.example.demo.repository.EmployeeRepository;
 
@@ -40,6 +40,23 @@ public class EmployeeService {
 
         employee.setEmployeeId(employeeId);
 
+        // Set status based on joining date
+        LocalDate today = LocalDate.now();
+
+        if (employee.getJoiningDate() != null
+                && employee.getJoiningDate().isAfter(today)) {
+
+            // Joining date is in the future
+            employee.setStatus(Employee.Status.INACTIVE);
+            employee.setAutoActivationPending(true);
+
+        } else {
+
+            // Joining date is today or already passed
+            employee.setStatus(Employee.Status.ACTIVE);
+            employee.setAutoActivationPending(false);
+        }
+
         // Only ADMIN needs password for login
         if (employee.getRole() == Employee.Role.ADMIN) {
 
@@ -64,60 +81,105 @@ public class EmployeeService {
     }
 
     // GET ALL
-    public List<Employee> getAllEmployees() {
+//   public List<Employee> getAllEmployees() {
+//
+//        return employeeRepository.findAll();
+//   }
+//    
+    public List<Employee> getAllEmployees(int page, int size) {
 
-        return employeeRepository.findAll()
-                .stream()
-                .filter(employee -> employee.getRole() != Employee.Role.ADMIN)
-                .toList();
-        
-    }    // GET BY ID
-    public Employee getEmployeeById(String employeeId) {
+        List<Employee> employees =
+                new ArrayList<>(employeeRepository.findAll());
 
-        return employeeRepository.findById(employeeId);
+        // Sorting
+        employees.sort(Comparator.comparing(Employee::getName));
+
+        // Pagination
+        int start = page * size;
+        int end = Math.min(start + size, employees.size());
+
+        if (start >= employees.size()) {
+            return List.of();
+        }
+
+        return employees.subList(start, end);
     }
+ // GET BY ID
+ public Employee getEmployeeById(String employeeId) {
+
+     return employeeRepository.findById(employeeId);
+ }
 
     // UPDATE
-    public Employee updateEmployee(
-            String employeeId,
-            Employee employee) {
+ public Employee updateEmployee(
+ String employeeId,
+ Employee employee) {
 
-        // Find existing employee
-        Employee existing =
-                employeeRepository.findById(employeeId);
+Employee existing =
+     employeeRepository.findById(employeeId);
 
-        if (existing == null) {
-            throw new RuntimeException("Employee not found");
-        }
+if (existing == null) {
+ throw new RuntimeException("Employee not found");
+}
 
-        // Keep the existing UUID
-        employee.setEmployeeId(employeeId);
+employee.setEmployeeId(employeeId);
 
-        // Handle password
-        if (employee.getRole() == Employee.Role.ADMIN) {
+// Email cannot be changed
+employee.setEmail(existing.getEmail());
 
-            // If a new password is provided, encode it
-            if (employee.getPassword() != null &&
-                !employee.getPassword().isBlank()) {
+LocalDate today = LocalDate.now();
 
-                employee.setPassword(
-                        passwordEncoder.encode(employee.getPassword())
-                );
+boolean joiningDateChanged =
+     existing.getJoiningDate() == null
+     || !existing.getJoiningDate()
+                .equals(employee.getJoiningDate());
 
-            } else {
+if (joiningDateChanged
+     && employee.getJoiningDate() != null
+     && employee.getJoiningDate().isAfter(today)) {
 
-                // Keep the existing password
-                employee.setPassword(existing.getPassword());
-            }
+ // Admin changed joining date to a future date
+ employee.setStatus(Employee.Status.INACTIVE);
+ employee.setAutoActivationPending(true);
 
-        } else {
+} else if (joiningDateChanged
+     && employee.getJoiningDate() != null
+     && !employee.getJoiningDate().isAfter(today)) {
 
-            // Normal employees don't have a password
-            employee.setPassword(null);
-        }
+ // Joining date changed to today/past
+ employee.setAutoActivationPending(false);
 
-        return employeeRepository.update(employee);
-    }
+} else {
+
+ // Joining date was not changed
+ // Keep existing pending state
+ employee.setAutoActivationPending(
+         existing.isAutoActivationPending()
+ );
+}
+
+// Password handling
+if (employee.getRole() == Employee.Role.ADMIN) {
+
+ if (employee.getPassword() != null &&
+     !employee.getPassword().isBlank()) {
+
+     employee.setPassword(
+             passwordEncoder.encode(employee.getPassword())
+     );
+
+ } else {
+
+     employee.setPassword(existing.getPassword());
+ }
+
+} else {
+
+ employee.setPassword(null);
+}
+
+return employeeRepository.update(employee);
+}
 
     // DELETE
     public void deleteEmployee(String employeeId) {
